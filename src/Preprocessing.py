@@ -62,10 +62,10 @@ class Preprocessing(object):
             for index, row in self.df.iterrows():
                 if pd.isnull(row['POSTCODE']) and not pd.isnull(row['STADDR']):
                     g = geocoder.osm(row['STADDR'] + ', New York, NY', session=session)
-                    if (g is not None):
-                        row['POSTCODE'] = g.postal
-                        row['Latitude'] = g.lat
-                        row['Longitude'] = g.lng
+                    if g is not None:
+                        self.df.loc[index, 'POSTCODE'] = g.postal
+                        self.df.loc[index, 'Latitude'] = g.lat
+                        self.df.loc[index, 'Longitude'] = g.lng
                         print(index)
 
     def run(self):
