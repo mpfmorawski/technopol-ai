@@ -1,5 +1,6 @@
 import pandas as pd
-
+import geocoder
+import requests
 
 class Preprocessing(object):
     """
@@ -10,7 +11,7 @@ class Preprocessing(object):
         self.df = self.read_data(path)
 
     def read_data(self, path):
-        return pd.read_csv(path, on_bad_lines = "skip")
+        return pd.read_csv(path, error_bad_lines=False)
 
     def trim_redundant_data(self):
         columns_to_drop = [
@@ -20,7 +21,7 @@ class Preprocessing(object):
             'Borough',
             'New Georeferenced Column'
         ]
-        self.df = self.df.drop(columns = columns_to_drop)
+        return self.df.drop(columns=columns_to_drop)
 
     def add_lat_to_central_park_column(self):
         central_park_lat = 40.785091
@@ -54,7 +55,19 @@ class Preprocessing(object):
         self.add_lat_to_financial_district_column()
         self.add_long_to_financial_district_column()
 
+    def fill_missing_geodata(self):
+        with requests.Session() as session:
+            for index, row in self.df.iterrows():
+                if pd.isnull(row['POSTCODE']) and not pd.isnull(row['STADDR']):
+                    g = geocoder.osm(row['STADDR'] + ', New York, NY', session=session)
+                    if (g is not None):
+                        row['POSTCODE'] = g.postal
+                        row['Latitude'] = g.lat
+                        row['Longitude'] = g.lng
+                        print(index)
+
     def run(self):
         self.trim_redundant_data()
+        self.fill_missing_geodata()
         self.add_columns_with_distances_to_main_places()
         return self.df
