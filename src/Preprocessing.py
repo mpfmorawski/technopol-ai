@@ -11,7 +11,7 @@ class Preprocessing(object):
         self.df = self.read_data(path)
 
     def read_data(self, path):
-        return pd.read_csv(path, error_bad_lines=False)
+        return pd.read_csv(path, on_bad_lines="skip")
 
     def trim_redundant_data(self):
         columns_to_drop = [
@@ -21,7 +21,7 @@ class Preprocessing(object):
             'Borough',
             'New Georeferenced Column'
         ]
-        return self.df.drop(columns=columns_to_drop)
+        self.df = self.df.drop(columns=columns_to_drop)
 
     def add_lat_to_central_park_column(self):
         central_park_lat = 40.785091
