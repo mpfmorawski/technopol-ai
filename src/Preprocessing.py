@@ -11,6 +11,9 @@ class Preprocessing(object):
 
     def __init__(self, path):
         self.df = self.read_data(path)
+        self.df_continous = pd.DataFrame()
+        self.df_categorical = pd.DataFrame()
+        self.df_value = pd.DataFrame()
 
     def read_data(self, path):
         return pd.read_csv(path, on_bad_lines="skip")
@@ -68,13 +71,6 @@ class Preprocessing(object):
                         row['Longitude'] = g.lng
                         print(index)
 
-    def run(self):
-        self.trim_redundant_data()
-        self.fill_missing_geodata()
-        self.add_columns_with_distances_to_main_places()
-        self.replace_lengths_with_areas()
-        return self.df
-
     def get_mean_column_value_for_boro(self, data, column_name: str, boro: int, include_zeros: bool = False):
         column_vals = data[data['BORO'] == boro][column_name]
         if include_zeros:
@@ -104,3 +100,30 @@ class Preprocessing(object):
 
         self.fill_missing_column_values_with_mean_for_boro(self.df, 'LTAREA')
         self.fill_missing_column_values_with_mean_for_boro(self.df, 'BLDAREA')
+    
+    def split_into_continous_and_categorical_data(self):
+        self.df_continous = self.df[['LTFRONT', 'LTDEPTH', 'STORIES', 'AVLAND', 'AVTOT', 'EXLAND', 'EXTOT', 'BLDFRONT', 'BLDDEPTH', 'AVLAND2', 'AVTOT2', 'EXLAND2', 'EXTOT2', 'Latitude', 'Longitude' ]]
+        self.df_categorical =  self.df[['BORO', 'BLOCK', 'LOT', 'EASEMENT', 'BLDGCL', 'TAXCLASS', 'EXT', 'STADDR', 'POSTCODE', 'EXMPTCL', 'EXCD2', 'YEAR', 'VALTYPE', 'Community Board', 'Council District', 'Census Tract', 'BIN', 'NTA', ]]
+        self.df_value = self.df[['FULLVAL']]
+        self.corr_df = self.df[['FULLVAL','LTFRONT', 'LTDEPTH', 'STORIES', 'AVLAND', 'AVTOT', 'EXLAND', 'EXTOT', 'BLDFRONT', 'BLDDEPTH', 'AVLAND2', 'AVTOT2', 'EXLAND2', 'EXTOT2', 'Latitude', 'Longitude' ]]
+    
+    def split_data_into_tax_categories(self, category): 
+        self.df = self.df[self.df['TAXCLASS'].isin(category)]
+
+    def caluclate_coefficient(self, treshold = 0.7):
+        correlation =self.corr_df.corr(method="pearson")
+        corr = pd.DataFrame(correlation['FULLVAL'])
+        print(corr)
+        columns_filtered = list(corr[corr['FULLVAL'] >= treshold].index)
+        columns_filtered.remove('FULLVAL')
+        return columns_filtered
+
+    def run(self, treshold, category):
+        self.trim_redundant_data()
+        #self.fill_missing_geodata()
+        self.add_columns_with_distances_to_main_places()
+        self.replace_lengths_with_areas()
+        self.split_data_into_tax_categories(category)
+        self.split_into_continous_and_categorical_data()
+        columns_name = self.caluclate_coefficient(treshold)
+        return self.df_continous[columns_name], self.df_value
