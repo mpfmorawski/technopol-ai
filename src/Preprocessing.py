@@ -146,7 +146,7 @@ class Preprocessing(object):
         # self.df_value = self.scaler_std_y.fit_transform(self.df_value)
         # self.df_value = pd.DataFrame(self.df_value, columns=column_names)
 
-    def run(self, treshold, category, boro = ""):
+    def run(self, category, col_names,boro = ""):
         self.trim_redundant_data()
         #self.fill_missing_geodata()
         self.add_columns_with_distances_to_main_places()
@@ -164,8 +164,7 @@ class Preprocessing(object):
             self.split_data_into_tax_categories(category)
 
         self.split_into_continous_and_categorical_data()
-        if self.standardization:
-            self.apply_scaling_on_continuous()
-        columns_name = self.caluclate_coefficient(treshold)
-        filtered_df = self.remove_NaN_column(columns_name)
+        #columns_name = self.caluclate_coefficient(treshold)
+        #filtered_df = self.remove_NaN_column(columns_name)
+        filtered_df = self.df[col_names]
         return filtered_df, self.df_value

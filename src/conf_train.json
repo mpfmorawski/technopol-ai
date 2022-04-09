@@ -1,0 +1,66 @@
+{
+    "tax" : {
+        "1" : {
+            "boro" : true,
+            "category" : ["1"],
+            "items" : {
+                "1" : {
+                    "columns" : ["AVTOT"],
+                    "model_name" : "linear_regression"
+                },
+                "2" : {
+                    "columns" : ["AVTOT"],
+                    "model_name" : "linear_regression"
+                },
+                "3" : {
+                    "columns" : ["AVTOT"],
+                    "model_name" : "linear_regression"
+                },
+                "4" : {
+                    "columns" : ["AVTOT"],
+                    "model_name" : "linear_regression"
+                },
+                "5" : {
+                    "columns" : ["AVTOT"],
+                    "model_name" : "linear_regression"
+                }
+            }
+        },
+        "1A" : {
+            "category" : ["1A"],
+            "boro" : false,
+            "columns" : ["AVTOT"],
+            "model_name" : "linear_regression"
+        },
+        "1B-1C" : {
+            "category" : ["1B", "1C"],
+            "boro" : false,
+            "columns" : ["AVTOT"],
+            "model_name" : "linear_regression"
+        },
+        "2A" : {
+            "category" : ["2A"],
+            "boro" : false,
+            "columns" : ["AVTOT"],
+            "model_name" : "linear_regression"
+        },
+        "2B" : {
+            "category" : ["2B"],
+            "boro" : false,
+            "columns" : ["AVTOT"],
+            "model_name" : "linear_regression"
+        },
+        "2C" : {
+            "category" : ["2C"],
+            "boro" : false,
+            "columns" : ["AVTOT"],
+            "model_name" : "linear_regression"
+        },
+        "234" : {
+            "category" : ["2", "3", "4"],
+            "boro" : false,
+            "columns" : ["AVTOT"],
+            "model_name" : "linear_regression"
+        }
+    }
+}
