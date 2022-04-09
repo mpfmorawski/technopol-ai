@@ -1,0 +1,57 @@
+{
+    "model" : "linear_regression",
+    "standardization" : false,
+    "tax" : {
+        "1" : {
+            "boro" : true,
+            "category" : ["1"],
+            "items" : {
+                "1" : {
+                    "threshold" : 0.7
+                },
+                "2" : {
+                    "threshold" : 0.7
+                },
+                "3" : {
+                    "threshold" : 0.7
+                },
+                "4" : {
+                    "threshold" : 0.7
+                },
+                "5" : {
+                    "threshold" : 0.7
+                }
+            }
+        },
+        "1A" : {
+            "category" : ["1A"],
+            "boro" : false,
+            "threshold" : 0.7
+        },
+        "1B-1C" : {
+            "category" : ["1B", "1C"],
+            "boro" : false,
+            "threshold" : 0.7
+        },
+        "2A" : {
+            "category" : ["2A"],
+            "boro" : false,
+            "threshold" : 0.7
+        },
+        "2B" : {
+            "category" : ["2B"],
+            "boro" : false,
+            "threshold" : 0.7
+        },
+        "2C" : {
+            "category" : ["2C"],
+            "boro" : false,
+            "threshold" : 0.7
+        },
+        "234" : {
+            "category" : ["2", "3", "4"],
+            "boro" : false,
+            "threshold" : 0.7
+        }
+    }
+}
