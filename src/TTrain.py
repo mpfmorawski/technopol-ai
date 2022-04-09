@@ -33,7 +33,17 @@ class TTrain():
         pickle.dump(self.model, open(filename, 'wb'))
 
     def train_gb_regression(self):
-        pass
+        self.model = GradientBoostingRegressor(random_state=0)
+        self.model.fit(self.X, self.Y)
+        # save the model to disk
+        filename = self.path
+        print(self.path)
+        pickle.dump(self.model, open(filename, 'wb'))
 
     def train_rf_regression(self):
-        pass
+        self.model = RandomForestRegressor(random_state=0)
+        self.model.fit(self.X, self.Y)
+        # save the model to disk
+        filename = self.path
+        print(self.path)
+        pickle.dump(self.model, open(filename, 'wb'))

@@ -12,7 +12,10 @@ class Preprocessing(object):
     """
 
     def __init__(self, path, boro = False, standardization = True):
-        self.df = self.read_data(path)
+        self.df_new = self.read_data(path)
+        self.trim_redundant_data()
+        self.fill_missing_geodata()
+        self.df = self.df_new.copy()
         self.df_continous = pd.DataFrame()
         self.df_categorical = pd.DataFrame()
         self.df_value = pd.DataFrame()
@@ -30,7 +33,7 @@ class Preprocessing(object):
             'Borough',
             'New Georeferenced Column'
         ]
-        self.df = self.df.drop(columns=columns_to_drop)
+        self.df = self.df_new.drop(columns=columns_to_drop)
 
     def add_lat_to_central_park_column(self):
         central_park_lat = 40.785091
@@ -66,13 +69,13 @@ class Preprocessing(object):
 
     def fill_missing_geodata(self):
         with requests.Session() as session:
-            for index, row in self.df.iterrows():
+            for index, row in self.df_new.iterrows():
                 if pd.isnull(row['POSTCODE']) and not pd.isnull(row['STADDR']):
                     g = geocoder.osm(row['STADDR'] + ', New York, NY', session=session)
                     if g is not None:
-                        self.df.loc[index, 'POSTCODE'] = g.postal
-                        self.df.loc[index, 'Latitude'] = g.lat
-                        self.df.loc[index, 'Longitude'] = g.lng
+                        self.df_new.loc[index, 'POSTCODE'] = g.postal
+                        self.df_new.loc[index, 'Latitude'] = g.lat
+                        self.df_new.loc[index, 'Longitude'] = g.lng
                         print(index)
 
     def get_mean_column_value_for_boro(self, data, column_name: str, boro: int, include_zeros: bool = False):
@@ -146,14 +149,18 @@ class Preprocessing(object):
         # self.df_value = self.scaler_std_y.fit_transform(self.df_value)
         # self.df_value = pd.DataFrame(self.df_value, columns=column_names)
 
+    def refresh_data(self, boro):
+        self.df = self.df_new.copy()
+        self.boro = boro
+
     def run(self, category, col_names,boro = ""):
-        self.trim_redundant_data()
-        #self.fill_missing_geodata()
         self.add_columns_with_distances_to_main_places()
         self.replace_lengths_with_areas()
 
         self.fill_missing_column_values_with_mean_for_boro(self.df, 'Latitude', replace_zeros=True)
         self.fill_missing_column_values_with_mean_for_boro(self.df, 'Longitude', replace_zeros=True)
+        self.fill_missing_column_values_with_mean_for_boro(self.df, 'STORIES', replace_zeros=False)
+
 
         for col_name in ['AVLAND2', 'AVTOT2', 'EXLAND2', 'EXTOT2']:
             self.df[col_name] = self.df[col_name].fillna(0)
