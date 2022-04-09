@@ -6,23 +6,28 @@
             "items" : {
                 "1" : {
                     "columns" : ["AVTOT"],
-                    "model_name" : "linear_regression"
+                    "model_name" : "linear_regression",
+                    "model_path" : "models/model_1_1.sav"
                 },
                 "2" : {
                     "columns" : ["AVTOT"],
-                    "model_name" : "linear_regression"
+                    "model_name" : "linear_regression",
+                    "model_path" : "models/model_1_2.sav"
                 },
                 "3" : {
                     "columns" : ["AVTOT"],
-                    "model_name" : "linear_regression"
+                    "model_name" : "linear_regression",
+                    "model_path" : "models/model_1_3.sav"
                 },
                 "4" : {
                     "columns" : ["AVTOT"],
-                    "model_name" : "linear_regression"
+                    "model_name" : "linear_regression",
+                    "model_path" : "models/model_1_4.sav"
                 },
                 "5" : {
                     "columns" : ["AVTOT"],
-                    "model_name" : "linear_regression"
+                    "model_name" : "linear_regression",
+                    "model_path" : "models/model_1_5.sav"
                 }
             }
         },
@@ -30,37 +35,43 @@
             "category" : ["1A"],
             "boro" : false,
             "columns" : ["AVTOT"],
-            "model_name" : "linear_regression"
+            "model_name" : "linear_regression",
+            "model_path" : "models/model_1A.sav"
         },
         "1B-1C" : {
             "category" : ["1B", "1C"],
             "boro" : false,
             "columns" : ["AVTOT"],
-            "model_name" : "linear_regression"
+            "model_name" : "linear_regression",
+            "model_path" : "models/model_1B-1C.sav"
         },
         "2A" : {
             "category" : ["2A"],
             "boro" : false,
             "columns" : ["AVTOT"],
-            "model_name" : "linear_regression"
+            "model_name" : "linear_regression",
+            "model_path" : "models/model_2A.sav"
         },
         "2B" : {
             "category" : ["2B"],
             "boro" : false,
             "columns" : ["AVTOT"],
-            "model_name" : "linear_regression"
+            "model_name" : "linear_regression",
+            "model_path" : "models/model_2B.sav"
         },
         "2C" : {
             "category" : ["2C"],
             "boro" : false,
             "columns" : ["AVTOT"],
-            "model_name" : "linear_regression"
+            "model_name" : "linear_regression",
+            "model_path" : "models/model_2C.sav"
         },
         "234" : {
             "category" : ["2", "3", "4"],
             "boro" : false,
             "columns" : ["AVTOT"],
-            "model_name" : "linear_regression"
+            "model_name" : "linear_regression",
+            "model_path" : "models/model_234.sav"
         }
     }
 }
