@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import geocoder
 import requests
+from sklearn.decomposition import PCA
 
 
 class Preprocessing(object):
@@ -9,11 +10,12 @@ class Preprocessing(object):
     Class for first preprocessing of given data
     """
 
-    def __init__(self, path):
+    def __init__(self, path, boro = False):
         self.df = self.read_data(path)
         self.df_continous = pd.DataFrame()
         self.df_categorical = pd.DataFrame()
         self.df_value = pd.DataFrame()
+        self.boro = boro
 
     def read_data(self, path):
         return pd.read_csv(path, on_bad_lines="skip")
@@ -100,6 +102,8 @@ class Preprocessing(object):
 
         self.fill_missing_column_values_with_mean_for_boro(self.df, 'LTAREA')
         self.fill_missing_column_values_with_mean_for_boro(self.df, 'BLDAREA')
+
+        self.df = self.df[self.df['FULLVAL'] < 25000000]
     
     def split_into_continous_and_categorical_data(self):
         self.df_continous = self.df[['LTFRONT', 'LTDEPTH', 'STORIES', 'AVLAND', 'AVTOT', 'EXLAND', 'EXTOT', 'BLDFRONT', 'BLDDEPTH', 'AVLAND2', 'AVTOT2', 'EXLAND2', 'EXTOT2', 'Latitude', 'Longitude' ]]
@@ -109,21 +113,36 @@ class Preprocessing(object):
     
     def split_data_into_tax_categories(self, category): 
         self.df = self.df[self.df['TAXCLASS'].isin(category)]
+    
+    def split_data_into_tax_boro_categories(self, category, boro): 
+        self.df = self.df[(self.df['TAXCLASS'].isin(category)) & (self.df['BORO'] == boro)]
+        print(self.df)
 
     def caluclate_coefficient(self, treshold = 0.7):
         correlation =self.corr_df.corr(method="pearson")
         corr = pd.DataFrame(correlation['FULLVAL'])
         print(corr)
-        columns_filtered = list(corr[corr['FULLVAL'] >= treshold].index)
+        columns_filtered = list(corr[corr['FULLVAL'].abs() >= treshold].index)
         columns_filtered.remove('FULLVAL')
         return columns_filtered
+    
+    def remove_NaN_column(self, column_list):
+        column_list.append('Latitude')
+        column_list.append('STORIES')
+        df_new = self.df[column_list]
+        df_new = self.df_new.dropna(axis=1)
+        return df_new
 
-    def run(self, treshold, category):
+    def run(self, treshold, category,boro):
         self.trim_redundant_data()
         #self.fill_missing_geodata()
         self.add_columns_with_distances_to_main_places()
         self.replace_lengths_with_areas()
-        self.split_data_into_tax_categories(category)
+        if self.boro :
+            self.split_data_into_tax_boro_categories(category, boro)
+        else :
+            self.split_data_into_tax_categories(category)
         self.split_into_continous_and_categorical_data()
         columns_name = self.caluclate_coefficient(treshold)
-        return self.df_continous[columns_name], self.df_value
+        filtered_df = self.remove_NaN_column(columns_name)
+        return filtered_df, self.df_value

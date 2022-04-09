@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.model_selection import train_test_split, KFold, cross_val_score
 
 class Train:
@@ -24,7 +25,8 @@ class Train:
 
         results_mae = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='neg_mean_absolute_error')
         print("MAE: %.3f (%.3f)" % (results_mae.mean(), results_mae.std()))
-
+        mae_ref = results_mae.mean()/self.Y.mean()
+        print(f"MAE_ref: {mae_ref}")
         self.model = LinearRegression()
 
         results_mse = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='neg_mean_squared_error')
@@ -34,6 +36,89 @@ class Train:
 
         results_r2 = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='r2')
         print("R2: %.3f (%.3f)" % (results_r2.mean(), results_r2.std())) 
+
+        res = {
+            "len" : self.X.shape(),
+            "mean_y" : self.Y.mean(),
+            "results" : results_mae,
+            "MAE_mean" : results_mae.mean(),
+            "MAE_std" : results_mae.std(),
+            "MAE_mean_ref" : results_mae.mean()/self.Y.mean(),
+            "R2_mean" : results_r2.mean(),
+            "R2_std" : results_r2.std(),
+        }
+
+        return res
+    
+    def evaluate_gb_regression(self):
+        self.model = GradientBoostingRegressor(random_state=0)
+        # print(f"Model coefficient: {self.model.coef_}, Model intercept: {self.model.intercept}")
+        # return self.model
+
+        print(self.Y.mean())
+
+        results_mae = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='neg_mean_absolute_error')
+        print("MAE: %.3f (%.3f)" % (results_mae.mean(), results_mae.std()))
+        mae_ref = results_mae.mean()/self.Y.mean()
+        print(f"MAE_ref: {mae_ref}")
+
+        self.model = GradientBoostingRegressor(random_state=0)
+
+        results_mse = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='neg_mean_squared_error')
+        print("MSE: %.3f (%.3f)" % (results_mse.mean(), results_mse.std()))
+
+        self.model = GradientBoostingRegressor(random_state=0)
+
+        results_r2 = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='r2')
+        print("R2: %.3f (%.3f)" % (results_r2.mean(), results_r2.std())) 
+
+        res = {
+            "len" : self.X.shape(),
+            "mean_y" : self.Y.mean(),
+            "results" : results_mae,
+            "MAE_mean" : results_mae.mean(),
+            "MAE_std" : results_mae.std(),
+            "MAE_mean_ref" : results_mae.mean()/self.Y.mean(),
+            "R2_mean" : results_r2.mean(),
+            "R2_std" : results_r2.std(),
+        }
+
+        return res
+
+    def evaluate_rf_regression(self):
+        self.model = RandomForestRegressor(criterion='absolute_error')
+        # print(f"Model coefficient: {self.model.coef_}, Model intercept: {self.model.intercept}")
+        # return self.model
+
+        print(self.Y.mean())
+
+        results_mae = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='neg_mean_absolute_error')
+        print("MAE: %.3f (%.3f)" % (results_mae.mean(), results_mae.std()))
+        mae_ref = results_mae.mean()/self.Y.mean()
+        print(f"MAE_ref: {mae_ref}")
+
+        self.model = RandomForestRegressor(criterion='absolute_error')
+
+        results_mse = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='neg_mean_squared_error')
+        print("MSE: %.3f (%.3f)" % (results_mse.mean(), results_mse.std()))
+
+        self.model = RandomForestRegressor(criterion='absolute_error')
+
+        results_r2 = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='r2')
+        print("R2: %.3f (%.3f)" % (results_r2.mean(), results_r2.std())) 
+
+        res = {
+            "len" : self.X.shape(),
+            "mean_y" : self.Y.mean(),
+            "results" : results_mae,
+            "MAE_mean" : results_mae.mean(),
+            "MAE_std" : results_mae.std(),
+            "MAE_mean_ref" : results_mae.mean()/self.Y.mean(),
+            "R2_mean" : results_r2.mean(),
+            "R2_std" : results_r2.std(),
+        }
+
+        return res
 
 
 

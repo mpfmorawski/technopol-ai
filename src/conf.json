@@ -1,0 +1,51 @@
+{
+    "model" : "linear_regression",
+    "tax" : {
+        "1" : {
+            "boro" : true,
+            "1" : {
+                "threshold" : 0.7
+            },
+            "2" : {
+                "threshold" : 0.7
+            },
+            "3" : {
+                "threshold" : 0.7
+            },
+            "4" : {
+                "threshold" : 0.7
+            },
+            "5" : {
+                "threshold" : 0.7
+            }
+        },
+        "1A" : {
+            "boro" : false,
+            "threshold" : 0.7
+        },
+        "1B" : {
+            "boro" : false,
+            "threshold" : 0.7
+        },
+        "1C" : {
+            "boro" : false,
+            "threshold" : 0.7
+        },
+        "2A" : {
+            "boro" : false,
+            "threshold" : 0.7
+        },
+        "2B" : {
+            "boro" : false,
+            "threshold" : 0.7
+        },
+        "2C" : {
+            "boro" : false,
+            "threshold" : 0.7
+        },
+        "234" : {
+            "boro" : false,
+            "threshold" : 0.7
+        }
+    }
+}
