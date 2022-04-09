@@ -84,7 +84,8 @@ class Preprocessing(object):
             mean_area_per_boro[boro] = self.get_mean_column_value_for_boro(data, column_name, boro)
 
         for i, row in data.iterrows():
-            data.at[i, column_name] = mean_area_per_boro[row['BORO']]
+            if pd.isna(row[column_name]):
+                data.at[i, column_name] = mean_area_per_boro[row['BORO']]
 
     def replace_lengths_with_areas(self):
         lot_f = 'LTFRONT'
@@ -100,7 +101,10 @@ class Preprocessing(object):
 
         self.fill_missing_column_values_with_mean_for_boro(self.df, 'LTAREA')
         self.fill_missing_column_values_with_mean_for_boro(self.df, 'BLDAREA')
-    
+        self.fill_missing_column_values_with_mean_for_boro(self.df, 'STORIES')
+        self.fill_missing_column_values_with_mean_for_boro(self.df, 'AVLAND')
+        self.fill_missing_column_values_with_mean_for_boro(self.df, 'AVTOT')
+
     def split_into_continous_and_categorical_data(self):
         self.df_continous = self.df[['LTFRONT', 'LTDEPTH', 'STORIES', 'AVLAND', 'AVTOT', 'EXLAND', 'EXTOT', 'BLDFRONT', 'BLDDEPTH', 'AVLAND2', 'AVTOT2', 'EXLAND2', 'EXTOT2', 'Latitude', 'Longitude' ]]
         self.df_categorical =  self.df[['BORO', 'BLOCK', 'LOT', 'EASEMENT', 'BLDGCL', 'TAXCLASS', 'EXT', 'STADDR', 'POSTCODE', 'EXMPTCL', 'EXCD2', 'YEAR', 'VALTYPE', 'Community Board', 'Council District', 'Census Tract', 'BIN', 'NTA', ]]
