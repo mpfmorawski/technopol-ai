@@ -1,22 +1,25 @@
 {
     "model" : "linear_regression",
+    "normalization" : false,
     "tax" : {
         "1" : {
             "boro" : true,
-            "1" : {
-                "threshold" : 0.7
-            },
-            "2" : {
-                "threshold" : 0.7
-            },
-            "3" : {
-                "threshold" : 0.7
-            },
-            "4" : {
-                "threshold" : 0.7
-            },
-            "5" : {
-                "threshold" : 0.7
+            "items" : {
+                "1" : {
+                    "threshold" : 0.7
+                },
+                "2" : {
+                    "threshold" : 0.7
+                },
+                "3" : {
+                    "threshold" : 0.7
+                },
+                "4" : {
+                    "threshold" : 0.7
+                },
+                "5" : {
+                    "threshold" : 0.7
+                }
             }
         },
         "1A" : {

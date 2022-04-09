@@ -27,4 +27,17 @@ if __name__ == '__main__':
     conf = json.load(f)
     print(conf)
 
+    for tax, tax_conf in conf['tax'].iteritems() :
+        if tax != '234' :
+            category = [tax]
+        else : category = ['2','3', '4']
+        if tax_conf['boro'] :
+            for boro, boro_conf in tax_conf['items']:
+                preproc = src.Preprocessing.Preprocessing("./data/train_data.csv")
+                threshold = boro_conf['threshold']
+                boro_num = int(boro)
+
+
+    
+
 
