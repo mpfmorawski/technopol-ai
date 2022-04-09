@@ -1,6 +1,6 @@
 {
     "model" : "linear_regression",
-    "normalization" : false,
+    "standardization" : false,
     "tax" : {
         "1" : {
             "boro" : true,

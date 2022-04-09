@@ -3,6 +3,7 @@ import numpy as np
 import geocoder
 import requests
 from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
 
 
 class Preprocessing(object):
@@ -10,12 +11,13 @@ class Preprocessing(object):
     Class for first preprocessing of given data
     """
 
-    def __init__(self, path, boro = False):
+    def __init__(self, path, boro = False, standardization = True):
         self.df = self.read_data(path)
         self.df_continous = pd.DataFrame()
         self.df_categorical = pd.DataFrame()
         self.df_value = pd.DataFrame()
         self.boro = boro
+        self.standardization = standardization
 
     def read_data(self, path):
         return pd.read_csv(path, on_bad_lines="skip")
@@ -80,13 +82,14 @@ class Preprocessing(object):
         else:
             return np.mean(column_vals[column_vals != 0])
 
-    def fill_missing_column_values_with_mean_for_boro(self, data, column_name: str):
+    def fill_missing_column_values_with_mean_for_boro(self, data, column_name: str, replace_zeros: bool = False):
         mean_area_per_boro = {}
         for boro in data['BORO'].unique():
             mean_area_per_boro[boro] = self.get_mean_column_value_for_boro(data, column_name, boro)
 
         for i, row in data.iterrows():
-            data.at[i, column_name] = mean_area_per_boro[row['BORO']]
+            if pd.isna(row[column_name]) or (replace_zeros and row[column_name] == 0):
+                data.at[i, column_name] = mean_area_per_boro[row['BORO']]
 
     def replace_lengths_with_areas(self):
         lot_f = 'LTFRONT'
@@ -104,21 +107,18 @@ class Preprocessing(object):
         self.fill_missing_column_values_with_mean_for_boro(self.df, 'BLDAREA')
 
         self.df = self.df[self.df['FULLVAL'] < 25000000]
-    
+
     def split_into_continous_and_categorical_data(self):
-        self.df_continous = self.df[['LTFRONT', 'LTDEPTH', 'STORIES', 'AVLAND', 'AVTOT', 'EXLAND', 'EXTOT', 'BLDFRONT', 'BLDDEPTH', 'AVLAND2', 'AVTOT2', 'EXLAND2', 'EXTOT2', 'Latitude', 'Longitude' ]]
+        self.df_continous = self.df[['STORIES', 'AVLAND', 'AVTOT', 'EXLAND', 'EXTOT', 'AVLAND2', 'AVTOT2', 'EXLAND2', 'EXTOT2', 'Latitude', 'Longitude', 'LTAREA', 'BLDAREA']]
         self.df_categorical =  self.df[['BORO', 'BLOCK', 'LOT', 'EASEMENT', 'BLDGCL', 'TAXCLASS', 'EXT', 'STADDR', 'POSTCODE', 'EXMPTCL', 'EXCD2', 'YEAR', 'VALTYPE', 'Community Board', 'Council District', 'Census Tract', 'BIN', 'NTA', ]]
         self.df_value = self.df[['FULLVAL']]
-        self.corr_df = self.df[['FULLVAL','LTFRONT', 'LTDEPTH', 'STORIES', 'AVLAND', 'AVTOT', 'EXLAND', 'EXTOT', 'BLDFRONT', 'BLDDEPTH', 'AVLAND2', 'AVTOT2', 'EXLAND2', 'EXTOT2', 'Latitude', 'Longitude' ]]
-    
-    def split_data_into_tax_categories(self, category): 
+        self.corr_df = self.df[['FULLVAL', 'STORIES', 'AVLAND', 'AVTOT', 'EXLAND', 'EXTOT', 'AVLAND2', 'AVTOT2', 'EXLAND2', 'EXTOT2', 'Latitude', 'Longitude', 'LTAREA', 'BLDAREA']]
+
+    def split_data_into_tax_categories(self, category):
         self.df = self.df[self.df['TAXCLASS'].isin(category)]
-    
-    def split_data_into_tax_boro_categories(self, category, boro): 
-        print(category)
-        print(boro)
+
+    def split_data_into_tax_boro_categories(self, category, boro):
         self.df = self.df[(self.df['TAXCLASS'].isin(category)) & (self.df['BORO'] == int(boro))]
-        print(self.df)
 
     def caluclate_coefficient(self, treshold = 0.7):
         correlation =self.corr_df.corr(method="pearson")
@@ -127,7 +127,7 @@ class Preprocessing(object):
         columns_filtered = list(corr[corr['FULLVAL'].abs() >= treshold].index)
         columns_filtered.remove('FULLVAL')
         return columns_filtered
-    
+
     def remove_NaN_column(self, column_list):
         column_list.append('Latitude')
         #column_list.append('STORIES')
@@ -135,16 +135,37 @@ class Preprocessing(object):
         df_new = df_new.dropna(axis=1)
         return df_new
 
+    def apply_scaling_on_continuous(self):
+        self.scaler_std_x = StandardScaler()
+        column_names = list(self.df_continous.columns.values)
+        self.df_continous = self.scaler_std_x.fit_transform(self.df_continous)
+        self.df_continous = pd.DataFrame(self.df_continous, columns=column_names)
+
+        self.scaler_std_y = StandardScaler()
+        column_names = list(self.df_value.columns.values)
+        self.df_value = self.scaler_std_y.fit_transform(self.df_value)
+        self.df_value = pd.DataFrame(self.df_value, columns=column_names)
+
     def run(self, treshold, category, boro = ""):
         self.trim_redundant_data()
         #self.fill_missing_geodata()
         self.add_columns_with_distances_to_main_places()
         self.replace_lengths_with_areas()
+
+        self.fill_missing_column_values_with_mean_for_boro(self.df, 'Latitude', replace_zeros=True)
+        self.fill_missing_column_values_with_mean_for_boro(self.df, 'Longitude', replace_zeros=True)
+
+        for col_name in ['AVLAND2', 'AVTOT2', 'EXLAND2', 'EXTOT2']:
+            self.df[col_name] = self.df[col_name].fillna(0)
+
         if self.boro :
             self.split_data_into_tax_boro_categories(category, boro)
         else :
             self.split_data_into_tax_categories(category)
+
         self.split_into_continous_and_categorical_data()
+        if self.standardization:
+            self.apply_scaling_on_continuous()
         columns_name = self.caluclate_coefficient(treshold)
         filtered_df = self.remove_NaN_column(columns_name)
         return filtered_df, self.df_value
