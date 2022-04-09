@@ -19,7 +19,7 @@ if __name__ == '__main__':
                 print(Y)
                 path = 'models/' + 'model_' + tax + '_' + boro + '.sav'
                 train = src.TTrain.TTrain(boro_conf['model_name'], X,Y, path )
-                train.train_linear_regression()
+                train.train_rf_regression()
         else :
             preproc.refresh_data( tax_conf['boro'])
             X, Y = preproc.run(category, boro_conf['columns'])
@@ -27,5 +27,5 @@ if __name__ == '__main__':
             print(Y)
             path = 'models/' + 'model_' + tax + '.sav'
             train = src.TTrain.TTrain(boro_conf['model_name'], X,Y, path )
-            train.train_linear_regression()
+            train.train_rf_regression()
 
