@@ -115,7 +115,9 @@ class Preprocessing(object):
         self.df = self.df[self.df['TAXCLASS'].isin(category)]
     
     def split_data_into_tax_boro_categories(self, category, boro): 
-        self.df = self.df[(self.df['TAXCLASS'].isin(category)) & (self.df['BORO'] == boro)]
+        print(category)
+        print(boro)
+        self.df = self.df[(self.df['TAXCLASS'].isin(category)) & (self.df['BORO'] == int(boro))]
         print(self.df)
 
     def caluclate_coefficient(self, treshold = 0.7):
@@ -128,12 +130,12 @@ class Preprocessing(object):
     
     def remove_NaN_column(self, column_list):
         column_list.append('Latitude')
-        column_list.append('STORIES')
+        #column_list.append('STORIES')
         df_new = self.df[column_list]
-        df_new = self.df_new.dropna(axis=1)
+        df_new = df_new.dropna(axis=1)
         return df_new
 
-    def run(self, treshold, category,boro):
+    def run(self, treshold, category, boro = ""):
         self.trim_redundant_data()
         #self.fill_missing_geodata()
         self.add_columns_with_distances_to_main_places()

@@ -26,11 +26,7 @@
             "boro" : false,
             "threshold" : 0.7
         },
-        "1B" : {
-            "boro" : false,
-            "threshold" : 0.7
-        },
-        "1C" : {
+        "1B-1C" : {
             "boro" : false,
             "threshold" : 0.7
         },
