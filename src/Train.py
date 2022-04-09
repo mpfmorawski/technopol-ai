@@ -15,10 +15,10 @@ class Train:
         self.model = None
         self.model_name = model_name
         self.kf = KFold(n_splits=10, random_state=7, shuffle=True)
-    
+
     def prepare_test_train_data(self, dataX, dataY):
         Xtrain, Ytrain, Xtest, Ytest = train_test_split(dataX, dataY, test_size=0.2, random_state=42)
-        return Xtrain, Ytrain, Xtest, Ytest 
+        return Xtrain, Ytrain, Xtest, Ytest
 
     def evaluate_regression(self):
         if self.model_name == 'linear_regression' :
@@ -27,13 +27,14 @@ class Train:
             res = self.evaluate_gb_regression()
         elif self.model_name == 'rf' :
             res = self.evaluate_rf_regression()
-        
+
         return res
 
     def evaluate_linear_regression(self):
         self.model = LinearRegression()
         # print(f"Model coefficient: {self.model.coef_}, Model intercept: {self.model.intercept}")
         # return self.model
+
 
         results_mae = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='neg_mean_absolute_error')
         print("MAE: %.3f (%.3f)" % (results_mae.mean(), results_mae.std()))
@@ -47,7 +48,7 @@ class Train:
         self.model = LinearRegression()
 
         results_r2 = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='r2')
-        print("R2: %.3f (%.3f)" % (results_r2.mean(), results_r2.std())) 
+        print("R2: %.3f (%.3f)" % (results_r2.mean(), results_r2.std()))
 
         results_mape = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='neg_mean_absolute_percentage_error')
         print("MAPE: %.3f (%.3f)" % (results_mape.mean(), results_mape.std()))
@@ -67,10 +68,18 @@ class Train:
             "R2_std" : str ( results_r2.std() ),
             "MAPE_mean" : str( results_mape.mean() ),
             "MAPE_std" : str( results_mape.std() ),
+            "columns": list(self.X)
+        }
+        results = {
+            'mae': np.mean(results_mae),
+            'mse': np.mean(results_mse),
+            'r2': np.mean(results_r2),
+            'mape': np.mean(results_mape),
+            'len': len(self.X)
         }
 
-        return res
-    
+        return res, results
+
     def evaluate_gb_regression(self):
         self.model = GradientBoostingRegressor(random_state=0)
         # print(f"Model coefficient: {self.model.coef_}, Model intercept: {self.model.intercept}")
@@ -91,9 +100,9 @@ class Train:
         self.model = GradientBoostingRegressor(random_state=0)
 
         results_r2 = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='r2')
-        print("R2: %.3f (%.3f)" % (results_r2.mean(), results_r2.std())) 
+        print("R2: %.3f (%.3f)" % (results_r2.mean(), results_r2.std()))
 
-        
+
         results_mape = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='neg_mean_absolute_percentage_error')
         print("MAPE: %.3f (%.3f)" % (results_mape.mean(), results_mape.std()))
 
@@ -114,7 +123,15 @@ class Train:
             "MAPE_std" : str( results_mape.std() ),
         }
 
-        return res
+        results = {
+            'mae': np.mean(results_mae),
+            'mse': np.mean(results_mse),
+            'r2': np.mean(results_r2),
+            'mape': np.mean(results_mape),
+            'len': len(self.X)
+        }
+
+        return res, results
 
     def evaluate_rf_regression(self):
         self.model = RandomForestRegressor(criterion='absolute_error')
@@ -123,26 +140,26 @@ class Train:
 
         print(self.Y.mean())
 
-        results_mae = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='neg_mean_absolute_error')
+        results_mae = cross_val_score(self.model, self.X, np.ravel(self.Y), cv=self.kf, scoring='neg_mean_absolute_error')
         print("MAE: %.3f (%.3f)" % (results_mae.mean(), results_mae.std()))
         mae_ref = results_mae.mean()/self.Y.mean()
         print(f"MAE_ref: {mae_ref}")
 
         self.model = RandomForestRegressor(criterion='absolute_error')
 
-        results_mse = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='neg_mean_squared_error')
+        results_mse = cross_val_score(self.model, self.X, np.ravel(self.Y), cv=self.kf, scoring='neg_mean_squared_error')
         print("MSE: %.3f (%.3f)" % (results_mse.mean(), results_mse.std()))
 
         self.model = RandomForestRegressor(criterion='absolute_error')
 
-        results_r2 = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='r2')
-        print("R2: %.3f (%.3f)" % (results_r2.mean(), results_r2.std())) 
+        results_r2 = cross_val_score(self.model, self.X, np.ravel(self.Y), cv=self.kf, scoring='r2')
+        print("R2: %.3f (%.3f)" % (results_r2.mean(), results_r2.std()))
 
-        results_mape = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='neg_mean_absolute_percentage_error')
+        results_mape = cross_val_score(self.model, self.X, np.ravel(self.Y), cv=self.kf, scoring='neg_mean_absolute_percentage_error')
         print("MSE: %.3f (%.3f)" % (results_mape.mean(), results_mape.std()))
 
-        
-        results_mape = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='neg_mean_absolute_percentage_error')
+
+        results_mape = cross_val_score(self.model, self.X, np.ravel(self.Y), cv=self.kf, scoring='neg_mean_absolute_percentage_error')
         print("MAPE: %.3f (%.3f)" % (results_mape.mean(), results_mape.std()))
 
         print(type(results_mae))
@@ -162,12 +179,20 @@ class Train:
             "MAPE_std" : str( results_mape.std() ),
         }
 
-        return res
+        results = {
+            'mae': np.mean(results_mae),
+            'mse': np.mean(results_mse),
+            'r2': np.mean(results_r2),
+            'mape': np.mean(results_mape),
+            'len': len(self.X)
+        }
+
+        return res, results
 
 
 
 
 
 
-    
+
 

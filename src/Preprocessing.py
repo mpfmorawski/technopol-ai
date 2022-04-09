@@ -11,13 +11,14 @@ class Preprocessing(object):
     Class for first preprocessing of given data
     """
 
-    def __init__(self, path, boro = False, standardization = True):
+    def __init__(self, path, boro = False, standardization = True, required_columns = ['Latitude', 'Longitude', 'STORIES']):
         self.df = self.read_data(path)
         self.df_continous = pd.DataFrame()
         self.df_categorical = pd.DataFrame()
         self.df_value = pd.DataFrame()
         self.boro = boro
         self.standardization = standardization
+        self.required_columns = required_columns
 
     def read_data(self, path):
         return pd.read_csv(path, on_bad_lines="skip")
@@ -101,7 +102,8 @@ class Preprocessing(object):
         self.df['LTAREA'] = np.where(self.df['LTAREA'] == 0, self.df['BLDAREA'], self.df['LTAREA'])
         self.df['BLDAREA'] = np.where(self.df['BLDAREA'] == 0, self.df['LTAREA'], self.df['BLDAREA'])
 
-        self.df.drop(columns=[lot_f, lot_d, bld_f, bld_d])
+        for column_name in [lot_f, lot_d, bld_f, bld_d]:
+            del self.df[column_name]
 
         self.fill_missing_column_values_with_mean_for_boro(self.df, 'LTAREA')
         self.fill_missing_column_values_with_mean_for_boro(self.df, 'BLDAREA')
@@ -129,8 +131,10 @@ class Preprocessing(object):
         return columns_filtered
 
     def remove_NaN_column(self, column_list):
-        column_list.append('Latitude')
-        #column_list.append('STORIES')
+        for req_col in self.required_columns:
+            if req_col not in column_list:
+                column_list.append(req_col)
+
         df_new = self.df[column_list]
         df_new = df_new.dropna(axis=1)
         return df_new
@@ -154,6 +158,7 @@ class Preprocessing(object):
 
         self.fill_missing_column_values_with_mean_for_boro(self.df, 'Latitude', replace_zeros=True)
         self.fill_missing_column_values_with_mean_for_boro(self.df, 'Longitude', replace_zeros=True)
+        self.fill_missing_column_values_with_mean_for_boro(self.df, 'STORIES', replace_zeros=False)
 
         for col_name in ['AVLAND2', 'AVTOT2', 'EXLAND2', 'EXTOT2']:
             self.df[col_name] = self.df[col_name].fillna(0)
@@ -164,8 +169,9 @@ class Preprocessing(object):
             self.split_data_into_tax_categories(category)
 
         self.split_into_continous_and_categorical_data()
-        if self.standardization:
-            self.apply_scaling_on_continuous()
+
+        # self.apply_scaling_on_continuous()
+
         columns_name = self.caluclate_coefficient(treshold)
         filtered_df = self.remove_NaN_column(columns_name)
         return filtered_df, self.df_value
