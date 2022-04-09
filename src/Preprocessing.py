@@ -141,10 +141,10 @@ class Preprocessing(object):
         self.df_continous = self.scaler_std_x.fit_transform(self.df_continous)
         self.df_continous = pd.DataFrame(self.df_continous, columns=column_names)
 
-        self.scaler_std_y = StandardScaler()
-        column_names = list(self.df_value.columns.values)
-        self.df_value = self.scaler_std_y.fit_transform(self.df_value)
-        self.df_value = pd.DataFrame(self.df_value, columns=column_names)
+        # self.scaler_std_y = StandardScaler()
+        # column_names = list(self.df_value.columns.values)
+        # self.df_value = self.scaler_std_y.fit_transform(self.df_value)
+        # self.df_value = pd.DataFrame(self.df_value, columns=column_names)
 
     def run(self, treshold, category, boro = ""):
         self.trim_redundant_data()

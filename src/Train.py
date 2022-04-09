@@ -49,17 +49,24 @@ class Train:
         results_r2 = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='r2')
         print("R2: %.3f (%.3f)" % (results_r2.mean(), results_r2.std())) 
 
+        results_mape = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='neg_mean_absolute_percentage_error')
+        print("MAPE: %.3f (%.3f)" % (results_mape.mean(), results_mape.std()))
+
         print(type(results_mae))
         rm = results_mae.tolist()
+        rma = results_mae.tolist()
         res = {
             "len" : str(len(self.X)),
             "mean_y" : str(self.Y.mean()),
             "results" : str(rm),
+            "results_m" : str(rma),
             "MAE_mean" : str(results_mae.mean()),
             "MAE_std" : str(results_mae.std()),
             "MAE_mean_ref" : str( results_mae.mean()/self.Y.mean() ),
             "R2_mean" : str( results_r2.mean() ),
-            "R2_std" : str ( results_r2.std() )
+            "R2_std" : str ( results_r2.std() ),
+            "MAPE_mean" : str( results_mape.mean() ),
+            "MAPE_std" : str( results_mape.std() ),
         }
 
         return res
@@ -85,16 +92,26 @@ class Train:
 
         results_r2 = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='r2')
         print("R2: %.3f (%.3f)" % (results_r2.mean(), results_r2.std())) 
+
+        
+        results_mape = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='neg_mean_absolute_percentage_error')
+        print("MAPE: %.3f (%.3f)" % (results_mape.mean(), results_mape.std()))
+
+        print(type(results_mae))
         rm = results_mae.tolist()
+        rma = results_mae.tolist()
         res = {
-            "len" : len(self.X),
-            "mean_y" : self.Y.mean(),
-            "results" : rm,
-            "MAE_mean" : float(results_mae.mean()),
-            "MAE_std" : float(results_mae.std()),
-            "MAE_mean_ref" : float( results_mae.mean()/self.Y.mean() ),
-            "R2_mean" : float( results_r2.mean() ),
-            "R2_std" : float ( results_r2.std() ),
+            "len" : str(len(self.X)),
+            "mean_y" : str(self.Y.mean()),
+            "results" : str(rm),
+            "results_m" : str(rma),
+            "MAE_mean" : str(results_mae.mean()),
+            "MAE_std" : str(results_mae.std()),
+            "MAE_mean_ref" : str( results_mae.mean()/self.Y.mean() ),
+            "R2_mean" : str( results_r2.mean() ),
+            "R2_std" : str ( results_r2.std() ),
+            "MAPE_mean" : str( results_mape.mean() ),
+            "MAPE_std" : str( results_mape.std() ),
         }
 
         return res
@@ -120,16 +137,29 @@ class Train:
 
         results_r2 = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='r2')
         print("R2: %.3f (%.3f)" % (results_r2.mean(), results_r2.std())) 
+
+        results_mape = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='neg_mean_absolute_percentage_error')
+        print("MSE: %.3f (%.3f)" % (results_mape.mean(), results_mape.std()))
+
+        
+        results_mape = cross_val_score(self.model, self.X, self.Y, cv=self.kf, scoring='neg_mean_absolute_percentage_error')
+        print("MAPE: %.3f (%.3f)" % (results_mape.mean(), results_mape.std()))
+
+        print(type(results_mae))
         rm = results_mae.tolist()
+        rma = results_mae.tolist()
         res = {
-            "len" : len(self.X),
-            "mean_y" : self.Y.mean(),
-            "results" : rm,
-            "MAE_mean" : float(results_mae.mean()),
-            "MAE_std" : float(results_mae.std()),
-            "MAE_mean_ref" : float( results_mae.mean()/self.Y.mean() ),
-            "R2_mean" : float( results_r2.mean() ),
-            "R2_std" : float ( results_r2.std() ),
+            "len" : str(len(self.X)),
+            "mean_y" : str(self.Y.mean()),
+            "results" : str(rm),
+            "results_m" : str(rma),
+            "MAE_mean" : str(results_mae.mean()),
+            "MAE_std" : str(results_mae.std()),
+            "MAE_mean_ref" : str( results_mae.mean()/self.Y.mean() ),
+            "R2_mean" : str( results_r2.mean() ),
+            "R2_std" : str ( results_r2.std() ),
+            "MAPE_mean" : str( results_mape.mean() ),
+            "MAPE_std" : str( results_mape.std() ),
         }
 
         return res

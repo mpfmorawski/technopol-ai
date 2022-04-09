@@ -29,11 +29,8 @@ if __name__ == '__main__':
     print(conf)
     model = conf['model']
     for tax, tax_conf in conf['tax'].items() :
-        if tax == '234' :
-            category = ['2','3', '4']
-        elif tax == '1B-1C':
-            category = ['1B', '1C']
-        else : category = [tax]
+        #print(tax_conf)
+        category = tax_conf['category']
         if tax_conf['boro'] :
             for boro, boro_conf in tax_conf['items'].items():
                 preproc = src.Preprocessing.Preprocessing("./data/train_data.csv", tax_conf['boro'])
