@@ -1,6 +1,7 @@
 import src.Preprocessing
 import src.Train
 import json
+from src.GUI import GUI
 
 
 if __name__ == '__main__':
@@ -24,6 +25,7 @@ if __name__ == '__main__':
     # print(Y)
     # train = src.Train.Train(X,Y)
     # train.evaluate_linear_regression()
+
     f = open("src/conf.json")
     conf = json.load(f)
     print(conf)
@@ -56,6 +58,8 @@ if __name__ == '__main__':
             with open(name, 'w') as f:
                 json.dump(res, f)
 
+    gui = GUI(preproc.df)
+    gui.run()
 
 
 
