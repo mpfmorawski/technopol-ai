@@ -32,7 +32,7 @@ if __name__ == '__main__':
         if tax == '234' :
             category = ['2','3', '4']
         elif tax == '1B-1C':
-            category = ['1A', '1B']
+            category = ['1B', '1C']
         else : category = [tax]
         if tax_conf['boro'] :
             for boro, boro_conf in tax_conf['items'].items():
@@ -55,7 +55,7 @@ if __name__ == '__main__':
             print(Y)
             train = src.Train.Train(X,Y, model)
             res = train.evaluate_regression()
-            name = 'results/' + 'model_' + tax + '_' + str(threshold) + '.json'
+            name = 'results/' +'model_' + str(model) + '_' + tax + '_' + str(threshold) + '.json'
             with open(name, 'w') as f:
                 json.dump(res, f)
 
