@@ -109,7 +109,7 @@ class Preprocessing(object):
         self.fill_missing_column_values_with_mean_for_boro(self.df, 'LTAREA')
         self.fill_missing_column_values_with_mean_for_boro(self.df, 'BLDAREA')
 
-        self.df = self.df[self.df['FULLVAL'] < 25000000]
+        #self.df = self.df[self.df['FULLVAL'] < 25000000]
 
     def split_into_continous_and_categorical_data(self):
         self.df_continous = self.df[['STORIES', 'AVLAND', 'AVTOT', 'EXLAND', 'EXTOT', 'AVLAND2', 'AVTOT2', 'EXLAND2', 'EXTOT2', 'Latitude', 'Longitude', 'LTAREA', 'BLDAREA']]
