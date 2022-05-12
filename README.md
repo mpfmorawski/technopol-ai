@@ -1,2 +1,3 @@
 # bhl-PAKMany
-Dokumentacja: https://www.overleaf.com/read/vjwkwqvtqrdr
+
+[Dokumentacja](/doc/technopol_ai.pdf)
